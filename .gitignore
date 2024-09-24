@@ -1,0 +1,22 @@
+# Ignore build directory
+build/
+
+# Ignore CMake files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+Makefile2
+cmake.check_cache
+progress.marks
+TargetDirectories.txt
+
+# Ignore object files
+*.o
+*.o.d
+
+# Ignore executable files
+OpenCV_Project
+
+# Ignore temporary files
+*.tmp
