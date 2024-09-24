@@ -2,6 +2,7 @@
 #include <opencv2/opencv.hpp>
 #include <filesystem>
 #include <fstream>
+#include <string>
 
 namespace fs = std::filesystem;
 
@@ -52,6 +53,7 @@ void findRedContours(const Mat &mask, Mat &outputImage, vector<vector<Point>> &c
         rectangle(outputImage, boundingBox.tl(), boundingBox.br(), Scalar(255, 0, 0), 2);
         double area = contourArea(contours[i]);
         logFile << "Contour " << i << " Area: " << area << endl;
+        cout << "Contour " << i << " Area: " << area << endl; // 输出到终端
     }
 }
 
@@ -78,8 +80,8 @@ void thresholdImage(const Mat &inputImage, Mat &outputImage)
 // 泛洪填充图像
 void floodFillImage(Mat &image)
 {
-    Point seedPoint = Point(10, 10);
-    floodFill(image, seedPoint, Scalar(255, 0, 0));
+    Point seedPoint = Point(100, 100);
+    floodFill(image, seedPoint, Scalar(0, 255, 0));
 }
 
 // 按给定角度旋转图像
@@ -118,7 +120,6 @@ int main()
     ofstream logFile("../assets/contour_areas.log");
     if (!logFile.is_open())
     {
-        cerr << "错误: 无法打开日志文件。" << endl;
         return -1;
     }
 
@@ -126,7 +127,6 @@ int main()
     Mat image = imread("../resources/test_image.png");
     if (image.empty())
     {
-        cerr << "错误: 无法打开或找到图像。" << endl;
         return -1;
     }
 
@@ -175,6 +175,16 @@ int main()
     // 在图像上绘制形状和文本
     drawShapes(image);
     imwrite("../assets/drawn_image.jpg", image);
+
+    // 应用阈值
+    Mat thresholdedImage;
+    thresholdImage(grayImage, thresholdedImage);
+    imwrite("../assets/thresholded_image.jpg", thresholdedImage);
+
+    // 应用泛洪填充
+    Mat floodFilledImage = thresholdedImage.clone();
+    floodFillImage(floodFilledImage);
+    imwrite("../assets/flood_filled_image.jpg", floodFilledImage);
 
     // 关闭日志文件
     logFile.close();
